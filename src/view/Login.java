@@ -26,10 +26,10 @@ public class Login extends javax.swing.JFrame {
         NguoiDung user = userService.login(username, password);
             if(user == null) {
                 JOptionPane.showMessageDialog(this, "Tai khoan khong ton tai", "Loi", JOptionPane.ERROR_MESSAGE);
-            } else if(user.getMatKhau().equals("")) {
+            } else if(user.getTaiKhoan().equals("")) {
                 JOptionPane.showMessageDialog(this, "Mat khau sai", "Loi", JOptionPane.ERROR_MESSAGE);
             } else {
-                new Home(user).setVisible(true);
+                new Home(user, 5).setVisible(true);
                 this.dispose();
             }
     }

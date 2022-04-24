@@ -14,4 +14,7 @@ public class UserService {
     public NguoiDung login(String username, String password) throws SQLException {
         return userDao.login(username, password);
     }
+    public int editPassword(String username, String pOld, String pNew, String pConf) throws SQLException {
+        return userDao.editPassword(username, pOld, pNew, pConf);
+    }
 }

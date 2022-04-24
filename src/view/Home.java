@@ -1,20 +1,44 @@
 package view;
 
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import model.NguoiDung;
+import service.UserService;
 
 public class Home extends javax.swing.JFrame {
 
-    /**
-     * Creates new form Home
-     */
-    public Home(NguoiDung user) {
+    NguoiDung user = null;
+    UserService userService = null;
+
+    public Home(NguoiDung user, int x) {
+        this.user = user;
+        userService = new UserService();
+
         initComponents();
-        
+
         setLocationRelativeTo(null);
-        
+
         hiddenPN();
-        TKB_PN.setVisible(true);
+        switch (x) {
+            case 1:
+                PhongHoc_PN.setVisible(true);
+            case 2:
+                TKB_PN.setVisible(true);
+            case 3:
+                LopHP_PN.setVisible(true);
+            case 4:
+                ThongKe_PN.setVisible(true);
+            case 5:
+                TaiKhoan_PN.setVisible(true);
+        }
     }
+
+    public void TaiKhoanPN() {
+        titleLB.setText("Xin chào " + user.getTenND());
+    }
+
     public void hiddenPN() {
         PhongHoc_PN.setVisible(false);
         TKB_PN.setVisible(false);
@@ -52,7 +76,16 @@ public class Home extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         TaiKhoan_PN = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
+        titleLB = new javax.swing.JLabel();
+        jPanel7 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
+        changePasswordBT = new javax.swing.JButton();
+        passwordOldTF = new javax.swing.JPasswordField();
+        passwordNewTF = new javax.swing.JPasswordField();
+        passwordConfirmTF = new javax.swing.JPasswordField();
+        logOutBT = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("HOME");
@@ -227,23 +260,115 @@ public class Home extends javax.swing.JFrame {
 
         TaiKhoan_PN.setLayout(new java.awt.CardLayout());
 
-        jLabel10.setText("Đây là trang tài khoản");
+        titleLB.setFont(new java.awt.Font("Segoe UI", 0, 40)); // NOI18N
+        titleLB.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        titleLB.setText("Xin chao Tus");
+
+        jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Đổi mật khẩu", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Segoe UI", 0, 25))); // NOI18N
+
+        jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        jLabel10.setText("Mật khẩu cũ:");
+
+        jLabel12.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        jLabel12.setText("Mật khẩu mới:");
+
+        jLabel13.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        jLabel13.setText("Xác nhận mật khẩu mới:");
+
+        changePasswordBT.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        changePasswordBT.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/edit.png"))); // NOI18N
+        changePasswordBT.setText("Đổi mật khẩu");
+        changePasswordBT.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                changePasswordBTActionPerformed(evt);
+            }
+        });
+
+        passwordOldTF.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+
+        passwordNewTF.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+
+        passwordConfirmTF.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel13)
+                            .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(passwordConfirmTF, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 478, Short.MAX_VALUE)
+                            .addComponent(passwordNewTF, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(passwordOldTF)))
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addGap(270, 270, 270)
+                        .addComponent(changePasswordBT)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(passwordOldTF, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(passwordNewTF, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(passwordConfirmTF, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(changePasswordBT, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        logOutBT.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        logOutBT.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/log out.png"))); // NOI18N
+        logOutBT.setText("Đăng xuất");
+        logOutBT.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                logOutBTActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGap(126, 126, 126)
-                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(663, Short.MAX_VALUE))
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(titleLB, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGap(112, 112, 112)
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(logOutBT)
+                            .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 77, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGap(171, 171, 171)
-                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(456, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(titleLB)
+                .addGap(18, 18, 18)
+                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(logOutBT, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(333, Short.MAX_VALUE))
         );
 
         TaiKhoan_PN.add(jPanel6, "card2");
@@ -313,7 +438,36 @@ public class Home extends javax.swing.JFrame {
     private void jLabel5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel5MouseClicked
         hiddenPN();
         TaiKhoan_PN.setVisible(true);
+        TaiKhoanPN();
     }//GEN-LAST:event_jLabel5MouseClicked
+
+    private void logOutBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logOutBTActionPerformed
+        new Login().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_logOutBTActionPerformed
+
+    private void changePasswordBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changePasswordBTActionPerformed
+        String username = user.getTaiKhoan();
+        String pOld = String.valueOf(passwordOldTF.getPassword());
+        String pNew = String.valueOf(passwordNewTF.getPassword());
+        String pConfirm = String.valueOf(passwordConfirmTF.getPassword());       
+        
+        try {            
+            if(userService.editPassword(username, pOld, pNew, pConfirm) == 1) {
+                JOptionPane.showMessageDialog(this, "Doi mat khau thanh cong", "Thong bao", JOptionPane.CLOSED_OPTION);
+                passwordOldTF.setText("");
+                passwordNewTF.setText("");
+                passwordConfirmTF.setText("");
+            } else if(userService.editPassword(username, pOld, pNew, pConfirm) == 2) {
+                JOptionPane.showMessageDialog(this, "Mat khau xac nhan phai giong mat khau moi", "Loi", JOptionPane.ERROR_MESSAGE);
+                passwordConfirmTF.setText("");
+            } else {
+                JOptionPane.showMessageDialog(this, "Mat khau cu sai", "Loi", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_changePasswordBTActionPerformed
 
     /**
      * @param args the command line arguments
@@ -356,8 +510,11 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JPanel TKB_PN;
     private javax.swing.JPanel TaiKhoan_PN;
     private javax.swing.JPanel ThongKe_PN;
+    private javax.swing.JButton changePasswordBT;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -372,5 +529,11 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JButton logOutBT;
+    private javax.swing.JPasswordField passwordConfirmTF;
+    private javax.swing.JPasswordField passwordNewTF;
+    private javax.swing.JPasswordField passwordOldTF;
+    private javax.swing.JLabel titleLB;
     // End of variables declaration//GEN-END:variables
 }

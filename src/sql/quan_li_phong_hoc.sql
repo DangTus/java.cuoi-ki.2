@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th4 24, 2022 lúc 03:51 AM
+-- Thời gian đã tạo: Th4 24, 2022 lúc 07:14 AM
 -- Phiên bản máy phục vụ: 10.4.22-MariaDB
 -- Phiên bản PHP: 8.1.2
 
@@ -58,15 +58,16 @@ INSERT INTO `lop_hoc_phan` (`ma_lhp`, `so_luong_sv`, `hoc_ki`) VALUES
 
 CREATE TABLE `nguoi_dung` (
   `tai_khoan` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `mat_khau` varchar(100) COLLATE utf8_unicode_ci NOT NULL
+  `mat_khau` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `tenND` varchar(50) COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `nguoi_dung`
 --
 
-INSERT INTO `nguoi_dung` (`tai_khoan`, `mat_khau`) VALUES
-('admin', 'admin');
+INSERT INTO `nguoi_dung` (`tai_khoan`, `mat_khau`, `tenND`) VALUES
+('admin', 'admin', 'Admin');
 
 -- --------------------------------------------------------
 
