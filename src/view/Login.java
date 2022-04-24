@@ -29,7 +29,8 @@ public class Login extends javax.swing.JFrame {
             } else if(user.getMatKhau().equals("")) {
                 JOptionPane.showMessageDialog(this, "Mat khau sai", "Loi", JOptionPane.ERROR_MESSAGE);
             } else {
-                JOptionPane.showMessageDialog(this, "Dung roi ban oi", "Loi", JOptionPane.ERROR_MESSAGE);
+                new Home(user).setVisible(true);
+                this.dispose();
             }
     }
 
