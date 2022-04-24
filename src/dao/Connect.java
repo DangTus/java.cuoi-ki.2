@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 public class Connect {
 
     public static Connection getJDBCConnection() {
-        final String url = "jdbc:mysql://localhost:3306/java.quanlithuvien";
+        final String url = "jdbc:mysql://localhost:3306/quan_li_phong_hoc";
         final String user = "root";
         final String password = "";
         try {

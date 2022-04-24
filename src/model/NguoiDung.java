@@ -4,6 +4,9 @@ public class NguoiDung {
     private String taiKhoan;
     private String matKhau;
 
+    public NguoiDung() {
+    }
+
     public NguoiDung(String taiKhoan, String matKhau) {
         this.taiKhoan = taiKhoan;
         this.matKhau = matKhau;
