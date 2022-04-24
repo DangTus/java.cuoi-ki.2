@@ -1,20 +1,29 @@
 package view;
 
+import java.awt.event.KeyEvent;
+import view.phongHoc.XemChiTiet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import model.NguoiDung;
+import model.Phong;
+import service.PhongService;
 import service.UserService;
 
 public class Home extends javax.swing.JFrame {
 
     NguoiDung user = null;
     UserService userService = null;
+    PhongService phongService = null;
+    DefaultTableModel defaultTableModel = null;
 
     public Home(NguoiDung user, int x) {
         this.user = user;
         userService = new UserService();
+        phongService = new PhongService();
 
         initComponents();
 
@@ -33,6 +42,31 @@ public class Home extends javax.swing.JFrame {
             case 5:
                 TaiKhoan_PN.setVisible(true);
         }
+    }
+
+    public void showTableData(List<Phong> phongs) throws SQLException {
+        defaultTableModel.setRowCount(0);
+        for (Phong phong : phongs) {
+            String trangThai = phong.getTrangThai() == 1 ? "Đang hoạt động" : "Đang bảo trì";
+            defaultTableModel.addRow(new Object[]{phong.getTenPhong(), phong.getSoChoNgoi(), trangThai});
+        }
+    }
+
+    public void phongHocPN() throws SQLException {
+        defaultTableModel = new DefaultTableModel() {
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        phongTB.setModel(defaultTableModel);
+        defaultTableModel.addColumn("Phòng");
+        defaultTableModel.addColumn("Số chỗ ngồi");
+        defaultTableModel.addColumn("Trạng thái");
+        showTableData(phongService.getAllPhong());
+    }
+
+    public void TaiKhoanPN() {
+        titleLB.setText("Xin chào " + user.getTenND());
     }
 
     public void hiddenPN() {
@@ -61,12 +95,12 @@ public class Home extends javax.swing.JFrame {
         PhongHoc_PN = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        phongTB = new javax.swing.JTable();
         jLabel7 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jButton1 = new javax.swing.JButton();
+        searchNamePhongTF = new javax.swing.JTextField();
+        searchNamePhongBT = new javax.swing.JButton();
         btnXemCT = new javax.swing.JButton();
+        btnXemCT1 = new javax.swing.JButton();
         TKB_PN = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         LopHP_PN = new javax.swing.JPanel();
@@ -80,10 +114,10 @@ public class Home extends javax.swing.JFrame {
         jLabel10 = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
-        changePasswordBT2 = new javax.swing.JButton();
-        passwordOldTF2 = new javax.swing.JPasswordField();
-        passwordNewTF2 = new javax.swing.JPasswordField();
-        passwordConfirmTF2 = new javax.swing.JPasswordField();
+        changePasswordBT = new javax.swing.JButton();
+        passwordOldTF = new javax.swing.JPasswordField();
+        passwordNewTF = new javax.swing.JPasswordField();
+        passwordConfirmTF = new javax.swing.JPasswordField();
         logOutBT = new javax.swing.JButton();
         titleLB = new javax.swing.JLabel();
 
@@ -168,8 +202,8 @@ public class Home extends javax.swing.JFrame {
 
         jPanel2.setBackground(new java.awt.Color(226, 125, 96));
 
-        jTable1.setFont(new java.awt.Font("Times New Roman", 0, 15)); // NOI18N
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        phongTB.setFont(new java.awt.Font("Times New Roman", 0, 15)); // NOI18N
+        phongTB.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -177,24 +211,42 @@ public class Home extends javax.swing.JFrame {
                 "Tên phòng", "Số chỗ ngồi", "Trạng thái"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        phongTB.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jScrollPane1.setViewportView(phongTB);
 
         jLabel7.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(255, 255, 255));
         jLabel7.setText("Tìm Kiếm:");
 
-        jTextField1.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        searchNamePhongTF.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        searchNamePhongTF.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                searchNamePhongTFKeyPressed(evt);
+            }
+        });
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Search-icon.png"))); // NOI18N
+        searchNamePhongBT.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Search-icon.png"))); // NOI18N
+        searchNamePhongBT.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchNamePhongBTActionPerformed(evt);
+            }
+        });
 
         btnXemCT.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
-        btnXemCT.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/details-icon.png"))); // NOI18N
-        btnXemCT.setText("Xem Chi Tiết");
+        btnXemCT.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/edit.png"))); // NOI18N
+        btnXemCT.setText("Sửa");
         btnXemCT.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnXemCTActionPerformed(evt);
+            }
+        });
+
+        btnXemCT1.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        btnXemCT1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/delete.png"))); // NOI18N
+        btnXemCT1.setText("Xóa");
+        btnXemCT1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnXemCT1ActionPerformed(evt);
             }
         });
 
@@ -203,39 +255,40 @@ public class Home extends javax.swing.JFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(89, 89, 89)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 676, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel7)
-                                .addGap(18, 18, 18)
-                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 472, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(172, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnXemCT)
-                .addGap(61, 61, 61))
+                        .addContainerGap()
+                        .addComponent(btnXemCT1)
+                        .addGap(44, 44, 44)
+                        .addComponent(btnXemCT))
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addGap(35, 35, 35)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 866, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addGap(89, 89, 89)
+                            .addComponent(jLabel7)
+                            .addGap(18, 18, 18)
+                            .addComponent(searchNamePhongTF, javax.swing.GroupLayout.PREFERRED_SIZE, 472, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(29, 29, 29)
+                            .addComponent(searchNamePhongBT, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(36, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(32, 32, 32)
+                .addGap(98, 98, 98)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(searchNamePhongTF, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(searchNamePhongBT, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(36, 36, 36)
+                .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(34, 34, 34)
-                .addComponent(btnXemCT, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnXemCT, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnXemCT1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(51, Short.MAX_VALUE))
         );
 
         PhongHoc_PN.add(jPanel2, "card2");
@@ -315,19 +368,20 @@ public class Home extends javax.swing.JFrame {
         jLabel18.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
         jLabel18.setText("Xác nhận mật khẩu mới:");
 
-        changePasswordBT2.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
-        changePasswordBT2.setText("Đổi mật khẩu");
-        changePasswordBT2.addActionListener(new java.awt.event.ActionListener() {
+        changePasswordBT.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        changePasswordBT.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/edit.png"))); // NOI18N
+        changePasswordBT.setText("Đổi mật khẩu");
+        changePasswordBT.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                changePasswordBT2ActionPerformed(evt);
+                changePasswordBTActionPerformed(evt);
             }
         });
 
-        passwordOldTF2.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        passwordOldTF.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
 
-        passwordNewTF2.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        passwordNewTF.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
 
-        passwordConfirmTF2.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        passwordConfirmTF.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
@@ -343,12 +397,12 @@ public class Home extends javax.swing.JFrame {
                             .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.TRAILING))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
                         .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(passwordConfirmTF2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 478, Short.MAX_VALUE)
-                            .addComponent(passwordNewTF2, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(passwordOldTF2)))
+                            .addComponent(passwordConfirmTF, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 478, Short.MAX_VALUE)
+                            .addComponent(passwordNewTF, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(passwordOldTF)))
                     .addGroup(jPanel9Layout.createSequentialGroup()
                         .addGap(270, 270, 270)
-                        .addComponent(changePasswordBT2)
+                        .addComponent(changePasswordBT)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -358,21 +412,22 @@ public class Home extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(passwordOldTF2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(passwordOldTF, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(passwordNewTF2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(passwordNewTF, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(passwordConfirmTF2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(passwordConfirmTF, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(changePasswordBT2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(changePasswordBT, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         logOutBT.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        logOutBT.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/log out.png"))); // NOI18N
         logOutBT.setText("Đăng xuất");
         logOutBT.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -460,6 +515,11 @@ public class Home extends javax.swing.JFrame {
     private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
         hiddenPN();
         PhongHoc_PN.setVisible(true);
+        try {
+            phongHocPN();
+        } catch (SQLException ex) {
+            Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jLabel1MouseClicked
 
     private void jLabel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel2MouseClicked
@@ -480,14 +540,25 @@ public class Home extends javax.swing.JFrame {
     private void jLabel5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel5MouseClicked
         hiddenPN();
         TaiKhoan_PN.setVisible(true);
+        TaiKhoanPN();
     }//GEN-LAST:event_jLabel5MouseClicked
 
     private void btnXemCTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXemCTActionPerformed
-        new XemChiTiet().setVisible(true);
-        this.dispose();
+        int row = phongTB.getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(this, "Vui long chon phong", "Loi", JOptionPane.ERROR_MESSAGE);
+        } else {
+            String id = String.valueOf(phongTB.getValueAt(row, 0));
+            try {
+                new XemChiTiet(user, id).setVisible(true);
+            } catch (SQLException ex) {
+                Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.dispose();
+        }
     }//GEN-LAST:event_btnXemCTActionPerformed
 
-    private void changePasswordBT2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changePasswordBT2ActionPerformed
+    private void changePasswordBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changePasswordBTActionPerformed
         String username = user.getTaiKhoan();
         String pOld = String.valueOf(passwordOldTF.getPassword());
         String pNew = String.valueOf(passwordNewTF.getPassword());
@@ -508,12 +579,34 @@ public class Home extends javax.swing.JFrame {
         } catch (SQLException ex) {
             Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_changePasswordBT2ActionPerformed
+    }//GEN-LAST:event_changePasswordBTActionPerformed
 
     private void logOutBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logOutBTActionPerformed
         new Login().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_logOutBTActionPerformed
+
+    private void searchNamePhongBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchNamePhongBTActionPerformed
+        try {
+            showTableData(phongService.getPhongByName(searchNamePhongTF.getText()));
+        } catch (SQLException ex) {
+            Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_searchNamePhongBTActionPerformed
+
+    private void searchNamePhongTFKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchNamePhongTFKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            try {
+                showTableData(phongService.getPhongByName(searchNamePhongTF.getText()));
+            } catch (SQLException ex) {
+                Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_searchNamePhongTFKeyPressed
+
+    private void btnXemCT1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXemCT1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnXemCT1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -557,19 +650,10 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JPanel TaiKhoan_PN;
     private javax.swing.JPanel ThongKe_PN;
     private javax.swing.JButton btnXemCT;
+    private javax.swing.JButton btnXemCT1;
     private javax.swing.JButton changePasswordBT;
-    private javax.swing.JButton changePasswordBT1;
-    private javax.swing.JButton changePasswordBT2;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel2;
@@ -584,22 +668,15 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
-    private javax.swing.JPanel jPanel7;
-    private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JButton logOutBT;
     private javax.swing.JPasswordField passwordConfirmTF;
-    private javax.swing.JPasswordField passwordConfirmTF1;
-    private javax.swing.JPasswordField passwordConfirmTF2;
     private javax.swing.JPasswordField passwordNewTF;
-    private javax.swing.JPasswordField passwordNewTF1;
-    private javax.swing.JPasswordField passwordNewTF2;
     private javax.swing.JPasswordField passwordOldTF;
-    private javax.swing.JPasswordField passwordOldTF1;
-    private javax.swing.JPasswordField passwordOldTF2;
+    private javax.swing.JTable phongTB;
+    private javax.swing.JButton searchNamePhongBT;
+    private javax.swing.JTextField searchNamePhongTF;
     private javax.swing.JLabel titleLB;
     // End of variables declaration//GEN-END:variables
 }

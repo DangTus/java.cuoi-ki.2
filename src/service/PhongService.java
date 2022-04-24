@@ -17,7 +17,11 @@ public class PhongService {
         return phongDao.getAllPhong();
     }
 
-    public Phong getPhongByName(String tenPhong) throws SQLException {
+    public List<Phong> getPhongByName(String tenPhong) throws SQLException {
         return phongDao.getPhongByName(tenPhong);
+    }
+    
+    public Phong getPhongById(String id) throws SQLException {
+        return phongDao.getPhongById(id);
     }
 }
