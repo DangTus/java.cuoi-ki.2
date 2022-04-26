@@ -1,6 +1,9 @@
 package view.phongHoc;
 
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import model.NguoiDung;
 import model.Phong;
 import service.PhongService;
@@ -8,6 +11,7 @@ import view.Home;
 import view.Login;
 
 public class XemChiTiet extends javax.swing.JFrame {
+
     PhongService phongService = null;
     String id;
     NguoiDung user = null;
@@ -16,12 +20,12 @@ public class XemChiTiet extends javax.swing.JFrame {
         phongService = new PhongService();
         this.user = user;
         this.id = id;
-        
+
         initComponents();
         setLocationRelativeTo(null);
         showData();
     }
-    
+
     public void showData() throws SQLException {
         Phong phong = phongService.getPhongById(id);
         tenPhongTF.setText(phong.getTenPhong());
@@ -30,8 +34,7 @@ public class XemChiTiet extends javax.swing.JFrame {
         tangTF.setText(String.valueOf(phong.getTang()));
         String trangThai = phong.getTrangThai() == 1 ? "Đang hoạt động" : "Đang bảo trì";
         trangThaiTF.setSelectedItem(trangThai);
-        
-        
+
     }
 
     /**
@@ -192,6 +195,20 @@ public class XemChiTiet extends javax.swing.JFrame {
         phong.setTang(Integer.parseInt(tangTF.getText()));
         int trang_thai = trangThaiTF.getSelectedItem() == "Đang hoạt động" ? 1 : 2;
         phong.setTrangThai(trang_thai);
+
+        try {
+            int kq = phongService.editPhong(phong);
+            if (kq == 1) {
+                JOptionPane.showMessageDialog(this, "Cap nhat thong tin thanh cong", "Thong bao", JOptionPane.CLOSED_OPTION);
+                new Home(user, 1).setVisible(true);
+                this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Loi cap nhat", "Loi", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(XemChiTiet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }//GEN-LAST:event_editBTActionPerformed
 
     /**

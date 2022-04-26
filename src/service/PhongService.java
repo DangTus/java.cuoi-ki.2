@@ -24,4 +24,8 @@ public class PhongService {
     public Phong getPhongById(String id) throws SQLException {
         return phongDao.getPhongById(id);
     }
+    
+    public int editPhong(Phong phong) throws SQLException {
+        return phongDao.editPhong(phong);
+    }
 }
